@@ -18,7 +18,10 @@ export default function RootLayout({
 		<html lang="en">
 			<body style={{ paddingBottom: "100px" }}>
 				<Providers>
-					<AutoConnect client={client} />
+				<AutoConnect 
+  client={client}
+  wallets={['metamask']} // Add this line
+/>
 					<Navbar />
 					{children}
 				</Providers>
