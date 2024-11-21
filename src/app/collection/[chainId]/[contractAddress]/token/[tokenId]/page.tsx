@@ -1,6 +1,7 @@
 "use client";
 
 import { Token } from "@/components/token-page/TokenPage";
+import { button } from "framer-motion/client";
 
 export default function ListingPage({
   params,
@@ -13,3 +14,4 @@ export default function ListingPage({
   }
   return <Token tokenId={BigInt(tokenId)} />;
 }
+
