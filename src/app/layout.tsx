@@ -3,7 +3,7 @@ import { Providers } from "@/components/shared/Providers";
 import { Navbar } from "@/components/shared/Navbar";
 import { AutoConnect } from "thirdweb/react";
 import { client } from "@/consts/client";
-import { MetamaskWallet } from "@thirdweb-dev/react";
+import { MetamaskWallet } from "thirdweb";
 
 export const metadata: Metadata = {
   title: "PIXEL WORLD Marketplace",
