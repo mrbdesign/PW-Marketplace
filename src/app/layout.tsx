@@ -3,7 +3,7 @@ import { Providers } from "@/components/shared/Providers";
 import { Navbar } from "@/components/shared/Navbar";
 import { AutoConnect } from "thirdweb/react";
 import { client } from "@/consts/client";
-import { metamask } from "@thirdweb-dev/wallets";
+import { MetamaskWallet } from "@thirdweb-dev/react";
 
 export const metadata: Metadata = {
   title: "PIXEL WORLD Marketplace",
@@ -21,7 +21,7 @@ export default function RootLayout({
         <Providers>
           <AutoConnect 
             client={client}
-            wallets={[metamask()]}
+            wallets={[new MetamaskWallet()]}
           />
           <Navbar />
           {children}
