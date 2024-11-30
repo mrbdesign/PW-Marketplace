@@ -35,33 +35,21 @@ export async function getOwnedERC721s(
 ): Promise<NFT[]> {
 	const { contract, owner, requestPerSec } = options;
 
-	const [is721, has_tokenOfOwnerByIndex] = await Promise.all([
-		isERC721({ contract }),
-		detectMethod({
-			method:
-				"function tokenOfOwnerByIndex(address owner, uint256 index) external view returns (uint256)",
-			contract,
-		}),
-	]);
+	const [is721] = await isERC721({ contract });
 
-	if (!is721) {
-		throw new Error("Contract is not an ERC721 contract");
-	}
+  if (!is721) {
+    throw new Error("Contract is not an ERC721 contract");
+  }
 
-	if (has_tokenOfOwnerByIndex) {
-		const { getOwnedNFTs } = await import("thirdweb/extensions/erc721");
-		return getOwnedNFTs(options);
-	}
+  const { nextTokenIdToMint, startTokenId, totalSupply, ownerOf, getNFT } =
+    await import("thirdweb/extensions/erc721");
 
-	const { nextTokenIdToMint, startTokenId, totalSupply, ownerOf, getNFT } =
-		await import("thirdweb/extensions/erc721");
-
-	const [startTokenId_, maxSupply] = await Promise.allSettled([
-		startTokenId(options),
-		nextTokenIdToMint(options),
-		totalSupply(options),
-	]).then(([_startTokenId, _next, _total]) => {
-		// default to 0 if startTokenId is not available
+  const [startTokenId_, maxSupply] = await Promise.allSettled([
+    startTokenId(options),
+    nextTokenIdToMint(options),
+    totalSupply(options),
+  ]).then(([_startTokenId, _next, _total]) => {
+    // default to 0 if startTokenId is not available
 		const startTokenId__ =
 			_startTokenId.status === "fulfilled" ? _startTokenId.value : 0n;
 		let maxSupply_: bigint;
