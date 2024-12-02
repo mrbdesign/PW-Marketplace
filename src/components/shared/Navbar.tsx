@@ -1,8 +1,6 @@
 "use client";
 
-import { client } from "@/consts/client";
-import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
-import { useGetENSName } from "@/hooks/useGetENSName";
+// UI Components
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,
@@ -16,6 +14,8 @@ import {
   Image,
   useColorMode,
 } from "@chakra-ui/react";
+
+// Third-party imports
 import { blo } from "blo";
 import { FaRegMoon } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
@@ -27,42 +27,20 @@ import {
   useDisconnect,
 } from "thirdweb/react";
 import type { Wallet } from "thirdweb/wallets";
+
+// Local imports
+import { client } from "@/consts/client";
+import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
+import { useGetENSName } from "@/hooks/useGetENSName";
 import { SideMenu } from "./SideMenu";
 
-export function Navbar() {
-  const account = useActiveAccount();
-  const wallet = useActiveWallet();
-  const { colorMode } = useColorMode();
+// Component definitions
+function ToggleThemeButton() {
+  const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <Box py="30px" px={{ base: "20px", lg: "50px" }}>
-      <Flex direction="row" justifyContent="space-between">
-        <Box my="auto">
-        <Heading
-  as={Link}
-  href="/"
-  _hover={{ textDecoration: "none" }}
-  color="white"
-  fontWeight="extrabold"
->
-  {/* Replace this with your own branding */}
-  Welcome to PIXEL WORLD
-</Heading>
-        </Box>
-        <Box display={{ lg: "block", base: "none" }}>
-          <ToggleThemeButton />
-          {account && wallet ? (
-            <ProfileButton address={account.address} wallet={wallet} />
-          ) : (
-            <ConnectButton
-              client={client}
-              theme={colorMode}
-              connectButton={{ style: { height: "56px" } }}
-            />
-          )}
-        </Box>
-        <SideMenu />
-      </Flex>
-    </Box>
+    <Button height="56px" w="56px" onClick={toggleColorMode} mr="10px">
+      {colorMode === "light" ? <FaRegMoon /> : <IoSunny />}
+    </Button>
   );
 }
 
@@ -77,6 +55,7 @@ function ProfileButton({
   const { data: ensName } = useGetENSName({ address });
   const { data: ensAvatar } = useGetENSAvatar({ ensName });
   const { colorMode } = useColorMode();
+
   return (
     <Menu>
       <MenuButton as={Button} height="56px">
@@ -112,11 +91,39 @@ function ProfileButton({
   );
 }
 
-function ToggleThemeButton() {
-  const { colorMode, toggleColorMode } = useColorMode();
+export function Navbar() {
+  const account = useActiveAccount();
+  const wallet = useActiveWallet();
+  const { colorMode } = useColorMode();
+
   return (
-    <Button height="56px" w="56px" onClick={toggleColorMode} mr="10px">
-      {colorMode === "light" ? <FaRegMoon /> : <IoSunny />}
-    </Button>
+    <Box py="30px" px={{ base: "20px", lg: "50px" }}>
+      <Flex direction="row" justifyContent="space-between">
+        <Box my="auto">
+          <Heading
+            as={Link}
+            href="/"
+            _hover={{ textDecoration: "none" }}
+            color="white"
+            fontWeight="extrabold"
+          >
+            Welcome to PIXEL WORLD
+          </Heading>
+        </Box>
+        <Box display={{ lg: "block", base: "none" }}>
+          <ToggleThemeButton />
+          {account && wallet ? (
+            <ProfileButton address={account.address} wallet={wallet} />
+          ) : (
+            <ConnectButton
+              client={client}
+              theme={colorMode}
+              connectButton={{ style: { height: "56px" } }}
+            />
+          )}
+        </Box>
+        <SideMenu />
+      </Flex>
+    </Box>
   );
 }

@@ -1,8 +1,6 @@
 "use client";
 
-import { client } from "@/consts/client";
-import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
-import { useGetENSName } from "@/hooks/useGetENSName";
+// UI Components
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
 import {
@@ -18,15 +16,24 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useRef } from "react";
+
+// Icons
 import { FaRegMoon } from "react-icons/fa";
 import { IoSunny } from "react-icons/io5";
+
+// Web3 & Hooks
 import {
   ConnectButton,
   useActiveAccount,
   useActiveWallet,
   useDisconnect,
 } from "thirdweb/react";
+import { useRef } from "react";
+import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
+import { useGetENSName } from "@/hooks/useGetENSName";
+
+// Constants
+import { client } from "@/consts/client";
 
 export function SideMenu() {
   const { isOpen, onOpen, onClose } = useDisclosure();
