@@ -35,7 +35,7 @@ export async function getOwnedERC721s(
 ): Promise<NFT[]> {
 	const { contract, owner, requestPerSec } = options;
 
-	const [is721] = await isERC721({ contract });
+	const is721 = await isERC721({ contract });
 
   if (!is721) {
     throw new Error("Contract is not an ERC721 contract");
