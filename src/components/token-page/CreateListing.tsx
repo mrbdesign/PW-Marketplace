@@ -56,7 +56,7 @@ export function CreateListing(props: Props) {
 
   const nativeToken: Token = {
     tokenAddress: NATIVE_TOKEN_ADDRESS,
-    symbol: chain.nativeCurrency?.symbol || "NATIVE TOKEN",
+    symbol: chain.nativeCurrency?.symbol || "ETH on BASE",
     icon: NATIVE_TOKEN_ICON_MAP[chain.id] || "",
   };
 
