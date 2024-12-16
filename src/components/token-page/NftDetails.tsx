@@ -58,7 +58,7 @@ export function NftDetails(props: Props) {
         </Flex>
         <Flex direction="row" justifyContent="space-between" mb="1">
           <Text>Chain</Text>
-          <Text>{nftContract.chain.name ?? "Unnamed chain"}</Text>
+          <Text>{nftContract.chain.name ?? "base"}</Text>
         </Flex>
       </AccordionPanel>
     </AccordionItem>
