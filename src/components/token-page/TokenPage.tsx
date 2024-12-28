@@ -107,6 +107,16 @@ export function Token(props: Props) {
               src={nft?.metadata.image}
               style={{ width: "max-content", height: "auto", aspectRatio: "1" }}
             />
+            {account && listings.length > 0 && (
+              <Flex justifyContent="center" width="100%">
+                {listings[0].creatorAddress.toLowerCase() !== account?.address.toLowerCase() && (
+                  <BuyFromListingButton
+                    account={account}
+                    listing={listings[0]}
+                  />
+                )}
+              </Flex>
+            )}
             <Accordion allowMultiple defaultIndex={[0, 1, 2]}>
               {nft?.metadata.description && (
                 <AccordionItem>
@@ -125,7 +135,6 @@ export function Token(props: Props) {
               )}
 
               {nft?.metadata?.attributes &&
-                // @ts-ignore TODO FIx later
                 nft?.metadata?.attributes.length > 0 && (
                   <NftAttributes attributes={nft.metadata.attributes} />
                 )}
@@ -201,7 +210,6 @@ export function Token(props: Props) {
                             {type === "ERC1155" && <Th px={1}>Qty</Th>}
                             <Th>Expiration</Th>
                             <Th px={1}>From</Th>
-                            <Th>{""}</Th>
                           </Tr>
                         </Thead>
                         <Tbody>
@@ -235,21 +243,6 @@ export function Token(props: Props) {
                                       : shortenAddress(item.creatorAddress)}
                                   </Text>
                                 </Td>
-                                {account && (
-                                  <Td>
-                                    {!listedByYou ? (
-                                      <BuyFromListingButton
-                                        account={account}
-                                        listing={item}
-                                      />
-                                    ) : (
-                                      <CancelListingButton
-                                        account={account}
-                                        listingId={item.id}
-                                      />
-                                    )}
-                                  </Td>
-                                )}
                               </Tr>
                             );
                           })}
@@ -272,16 +265,9 @@ export function Token(props: Props) {
 }
 
 function getExpiration(endTimeInSeconds: bigint) {
-  // Get the current date and time
   const currentDate = new Date();
-
-  // Convert seconds to milliseconds (bigint)
   const milliseconds: bigint = endTimeInSeconds * 1000n;
-
-  // Calculate the future date by adding milliseconds to the current date
   const futureDate = new Date(currentDate.getTime() + Number(milliseconds));
-
-  // Format the future date
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",

@@ -25,6 +25,11 @@ const buyButtonStyles = {
   backgroundColor: "#9ACD32",
   color: "white",
   transition: "all 0.3s ease",
+  width: "100%",
+  minHeight: "80px", // This will definitely set the height
+  py: 8, // Additional padding to enforce height
+  fontSize: "2xl", // Chakra UI font size scale
+  fontWeight: "bold",
   _hover: {
     backgroundColor: "#8BB82D",
     transform: "scale(1.05)",
