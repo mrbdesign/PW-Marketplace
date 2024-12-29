@@ -79,13 +79,13 @@ export function Token(props: Props) {
   const listings = (listingsInSelectedCollection || []).filter(
     (item) =>
       item.assetContractAddress.toLowerCase() ===
-        nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
+      nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
   );
 
   const auctions = (allAuctions || []).filter(
     (item) =>
       item.assetContractAddress.toLowerCase() ===
-        nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
+      nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
   );
 
   const allLoaded = !isLoadingNFT && !isLoading && !isRefetchingAllListings;
@@ -109,7 +109,8 @@ export function Token(props: Props) {
             />
             {account && listings.length > 0 && (
               <Flex justifyContent="center" width="100%">
-                {listings[0].creatorAddress.toLowerCase() !== account?.address.toLowerCase() && (
+                {listings[0].creatorAddress.toLowerCase() !==
+                  account?.address.toLowerCase() && (
                   <BuyFromListingButton
                     account={account}
                     listing={listings[0]}
@@ -134,10 +135,11 @@ export function Token(props: Props) {
                 </AccordionItem>
               )}
 
-              {nft?.metadata?.attributes &&
-                nft?.metadata?.attributes.length > 0 && (
-                  <NftAttributes attributes={nft.metadata.attributes} />
-                )}
+              {nft?.metadata?.attributes && 
+                Array.isArray(nft.metadata.attributes) && 
+                nft.metadata.attributes.length > 0 && (
+                  <NftAttributes attributes={nft.metadata.attributes as Record<string, unknown>} />
+              )}
 
               {nft && <NftDetails nft={nft} />}
             </Accordion>
@@ -180,8 +182,8 @@ export function Token(props: Props) {
             {account &&
               nft &&
               (ownedByYou || (ownedQuantity1155 && ownedQuantity1155 > 0n)) && (
-                <CreateListing tokenId={nft?.id} account={account} />
-              )}
+              <CreateListing tokenId={nft?.id} account={account} />
+            )}
             <Accordion
               mt="30px"
               sx={{ container: {} }}

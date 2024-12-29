@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+    };
+    return config;
+  },
   async headers() {
     return [
       {
@@ -13,7 +20,7 @@ const nextConfig = {
               "frame-src 'self' https://*.coinbase.com https://*.metamask.io https://*.thirdweb.com https://embedded-wallet.thirdweb.com https://verify.walletconnect.com",
               "frame-ancestors 'self' https://*.coinbase.com https://*.metamask.io https://*.thirdweb.com",
               "connect-src 'self' https://* wss://* https://verify.walletconnect.com",
-              "style-src 'self' 'unsafe-inline'", 
+              "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https://* blob:",
               "worker-src 'self' blob:"
             ].join('; ')
