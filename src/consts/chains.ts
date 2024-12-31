@@ -1,5 +1,5 @@
 import { defineChain } from "thirdweb";
-import { base } from "thirdweb/chains";
+import { base, polygon } from "thirdweb/chains";
 
 // For Base mainnet
 export const baseMainnet = defineChain(8453);
@@ -7,5 +7,5 @@ export const baseMainnet = defineChain(8453);
 // For Base testnet (Goerli)
 export const baseTestnet = defineChain(84531);
 
-// Export the one you need
-export { baseMainnet as base };
+// Export the chains we need
+export { baseMainnet as base, polygon };

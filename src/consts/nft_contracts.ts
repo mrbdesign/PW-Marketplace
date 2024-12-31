@@ -23,9 +23,14 @@ export const NFT_CONTRACTS: NftContract[] = [
     address: "0x7CbDae78ceb1E27Aa6B0588f58D68afa560f6E16",
     chain: base,
     title: "PIXEL WORLD by Mr.Brian Design",
-    thumbnailUrl:
-      "/thumb/PW-300.png",
+    thumbnailUrl: "/thumb/PW-300.png",
     type: "ERC721",
   },
-  
+  {
+    address: "0xbA297ce86FFd76b9C5EA7EC47b2722B141f9b1Ea",
+    chain: base,
+    title: "LITTLE WORLD Glass Works",
+    thumbnailUrl: "/thumb/GW-300.png",
+    type: "ERC721",
+  },
 ];
