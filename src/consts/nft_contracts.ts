@@ -33,4 +33,11 @@ export const NFT_CONTRACTS: NftContract[] = [
     thumbnailUrl: "/thumb/GW-300.png",
     type: "ERC721",
   },
+  {
+    address: "0xDAFc541FDA44BDB0ca0861641B20f4e1B2784E27",
+    chain: base,
+    title: "MACHINE ELVES by ArtsAbide",
+    thumbnailUrl: "/thumb/ME-300.png",
+    type: "ERC721",
+  },
 ];
