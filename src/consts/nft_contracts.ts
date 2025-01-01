@@ -1,5 +1,5 @@
 import type { Chain } from "thirdweb";
-import { base } from "./chains";
+import { base, polygon } from "./chains";
 
 export type NftContract = {
   address: string;
@@ -31,6 +31,13 @@ export const NFT_CONTRACTS: NftContract[] = [
     chain: base,
     title: "LITTLE WORLD Glass Works",
     thumbnailUrl: "/thumb/GW-300.png",
+    type: "ERC721",
+  },
+  {
+    address: "0x8AfF95418B5E444a47cE5f11e1a1d67F99284920",
+    chain: polygon,
+    title: "LITTLE WORLD PFPs",
+    thumbnailUrl: "/thumb/LW-300.png",
     type: "ERC721",
   },
   {
