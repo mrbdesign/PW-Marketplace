@@ -5,7 +5,6 @@ export type NftContract = {
   address: string;
   chain: Chain;
   type: "ERC1155" | "ERC721";
-
   title?: string;
   description?: string;
   thumbnailUrl?: string;
@@ -34,8 +33,8 @@ export const NFT_CONTRACTS: NftContract[] = [
     type: "ERC721",
   },
   {
-    address: "0x8AfF95418B5E444a47cE5f11e1a1d67F99284920",
-    chain: polygon,
+    address: "0xdAd823bE6758f0584222A68E82C3e2621C4a952e",
+    chain: base,
     title: "LITTLE WORLD PFPs",
     thumbnailUrl: "/thumb/LW-300.png",
     type: "ERC721",
