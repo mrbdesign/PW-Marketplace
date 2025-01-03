@@ -32,7 +32,6 @@ import {
   useSwitchActiveWalletChain,
 } from "thirdweb/react";
 import type { Account } from "thirdweb/wallets";
-import { grantAssetRole } from "@/utils/grantAssetRole";
 
 type Props = {
   tokenId: bigint;
