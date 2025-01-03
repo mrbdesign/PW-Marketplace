@@ -91,7 +91,7 @@ export function Token(props: Props) {
   const allLoaded = !isLoadingNFT && !isLoading && !isRefetchingAllListings;
 
   const ownedByYou =
-    nft?.owner?.toLowerCase() === account?.address.toLowerCase();
+    nft?.owner?.toLowerCase() === account?.address?.toLowerCase();
 
   return (
     <Flex direction="column">
@@ -110,7 +110,7 @@ export function Token(props: Props) {
             {account && listings.length > 0 && (
               <Flex justifyContent="center" width="100%">
                 {listings[0].creatorAddress.toLowerCase() !==
-                  account?.address.toLowerCase() && (
+                  account?.address.toLowerCase() && account && (
                   <BuyFromListingButton
                     account={account}
                     listing={listings[0]}
@@ -138,8 +138,8 @@ export function Token(props: Props) {
               {nft?.metadata?.attributes &&
                 Array.isArray(nft.metadata.attributes) &&
                 nft.metadata.attributes.length > 0 && (
-                <NftAttributes attributes={nft.metadata.attributes as Record<string, unknown>} />
-              )}
+                  <NftAttributes attributes={nft.metadata.attributes as Record<string, unknown>} />
+                )}
 
               {nft && <NftDetails nft={nft} />}
             </Accordion>
@@ -182,8 +182,8 @@ export function Token(props: Props) {
             {account &&
               nft &&
               (ownedByYou || (ownedQuantity1155 && ownedQuantity1155 > 0n)) && (
-              <CreateListing tokenId={nft?.id} account={account} />
-            )}
+                <CreateListing tokenId={nft?.id} account={account} />
+              )}
             <Accordion
               mt="30px"
               sx={{ container: {} }}
@@ -215,7 +215,7 @@ export function Token(props: Props) {
                         <Tbody>
                           {listings.map((item) => {
                             const listedByYou =
-                              item.creatorAddress.toLowerCase() === account?.address.toLowerCase();
+                              item.creatorAddress.toLowerCase() === account?.address?.toLowerCase();
                             return (
                               <Tr key={item.id.toString()}>
                                 <Td>
@@ -238,10 +238,10 @@ export function Token(props: Props) {
                                   </Text>
                                 </Td>
                                 <Td>
-                                  {listedByYou && (
+                                  {listedByYou && account && (
                                     <CancelListingButton account={account} listingId={item.id} />
                                   )}
-                                  {!listedByYou && (
+                                  {!listedByYou && account && (
                                     <BuyFromListingButton account={account} listing={item} />
                                   )}
                                 </Td>
