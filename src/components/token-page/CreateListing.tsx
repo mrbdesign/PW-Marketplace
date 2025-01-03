@@ -158,11 +158,11 @@ export function CreateListing(props: Props) {
       });
 
       refetchAllListings();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Listing error:", error);
       toast({
         title: "Error",
-        description: "Failed to create listing: " + error.message,
+        description: "Failed to create listing: " + (error?.message || "Unknown error occurred"),
         status: "error",
         isClosable: true,
         duration: 5000,
