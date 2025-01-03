@@ -20,6 +20,7 @@ export function ListingGrid() {
     lg: Math.min(len, 4),
     xl: Math.min(len, 5),
   });
+
   if (!listingsInSelectedCollection || !len) return <></>;
   return (
     <SimpleGrid columns={columns} spacing={4} p={4} mx="auto" mt="20px">

@@ -79,13 +79,13 @@ export function Token(props: Props) {
   const listings = (listingsInSelectedCollection || []).filter(
     (item) =>
       item.assetContractAddress.toLowerCase() ===
-      nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
+        nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
   );
 
   const auctions = (allAuctions || []).filter(
     (item) =>
       item.assetContractAddress.toLowerCase() ===
-      nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
+        nftContract.address.toLowerCase() && item.asset.id === BigInt(tokenId)
   );
 
   const allLoaded = !isLoadingNFT && !isLoading && !isRefetchingAllListings;
@@ -135,10 +135,10 @@ export function Token(props: Props) {
                 </AccordionItem>
               )}
 
-              {nft?.metadata?.attributes && 
-                Array.isArray(nft.metadata.attributes) && 
+              {nft?.metadata?.attributes &&
+                Array.isArray(nft.metadata.attributes) &&
                 nft.metadata.attributes.length > 0 && (
-                  <NftAttributes attributes={nft.metadata.attributes as Record<string, unknown>} />
+                <NftAttributes attributes={nft.metadata.attributes as Record<string, unknown>} />
               )}
 
               {nft && <NftDetails nft={nft} />}
@@ -202,23 +202,20 @@ export function Token(props: Props) {
                 <AccordionPanel pb={4}>
                   {listings.length > 0 ? (
                     <TableContainer>
-                      <Table
-                        variant="simple"
-                        sx={{ "th, td": { borderBottom: "none" } }}
-                      >
+                      <Table variant="simple" sx={{ "th, td": { borderBottom: "none" } }}>
                         <Thead>
                           <Tr>
                             <Th>Price</Th>
                             {type === "ERC1155" && <Th px={1}>Qty</Th>}
                             <Th>Expiration</Th>
                             <Th px={1}>From</Th>
+                            <Th>Actions</Th>
                           </Tr>
                         </Thead>
                         <Tbody>
                           {listings.map((item) => {
                             const listedByYou =
-                              item.creatorAddress.toLowerCase() ===
-                              account?.address.toLowerCase();
+                              item.creatorAddress.toLowerCase() === account?.address.toLowerCase();
                             return (
                               <Tr key={item.id.toString()}>
                                 <Td>
@@ -233,17 +230,20 @@ export function Token(props: Props) {
                                   </Td>
                                 )}
                                 <Td>
-                                  <Text>
-                                    {getExpiration(item.endTimeInSeconds)}
-                                  </Text>
+                                  <Text>{getExpiration(item.endTimeInSeconds)}</Text>
                                 </Td>
                                 <Td px={1}>
                                   <Text>
-                                    {item.creatorAddress.toLowerCase() ===
-                                    account?.address.toLowerCase()
-                                      ? "You"
-                                      : shortenAddress(item.creatorAddress)}
+                                    {listedByYou ? "You" : shortenAddress(item.creatorAddress)}
                                   </Text>
+                                </Td>
+                                <Td>
+                                  {listedByYou && (
+                                    <CancelListingButton account={account} listingId={item.id} />
+                                  )}
+                                  {!listedByYou && (
+                                    <BuyFromListingButton account={account} listing={item} />
+                                  )}
                                 </Td>
                               </Tr>
                             );
