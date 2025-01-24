@@ -28,13 +28,13 @@ import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
 import { ProfileMenu } from "./Menu";
 import { OwnedItem } from "./OwnedItem";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {
   address: string;
 };
 
-export function ProfileSection(props: Props) {
+function ProfileSection(props: Props) {
   const { address } = props;
   const account = useActiveAccount();
   const isYou = address.toLowerCase() === account?.address.toLowerCase();
@@ -53,7 +53,8 @@ export function ProfileSection(props: Props) {
 
   const {
     data,
-    isLoading,
+    isLoading: isLoadingOwnedNFTs,
+    error
   } = useReadContract(
     selectedCollection.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
     {
@@ -62,11 +63,32 @@ export function ProfileSection(props: Props) {
       requestPerSec: 100,
       queryOptions: {
         enabled: !!address,
-        staleTime: 10000,
-        refetchOnWindowFocus: false,
+        refetchInterval: 10000,
+        retry: 3
       },
     }
   );
+
+  useEffect(() => {
+    if (error) {
+      console.error('NFT loading error:', {
+        error,
+        contractType: selectedCollection.type,
+        contractAddress: contract.address,
+        ownerAddress: address
+      });
+    }
+  }, [error, selectedCollection.type, contract.address, address]);
+
+  useEffect(() => {
+    console.log('Contract Details:', {
+      type: selectedCollection.type,
+      address: contract.address,
+      owner: address,
+      data: data,
+      isLoading: isLoadingOwnedNFTs
+    });
+  }, [selectedCollection, data, isLoadingOwnedNFTs, contract.address, address]);
 
   const chain = contract.chain;
   const marketplaceContractAddress = MARKETPLACE_CONTRACTS.find(
@@ -83,10 +105,10 @@ export function ProfileSection(props: Props) {
   const { data: allValidListings, isLoading: isLoadingValidListings } =
     useReadContract(getAllValidListings, {
       contract: marketplaceContract,
-      queryOptions: { 
+      queryOptions: {
         enabled: true,
-        staleTime: 10000,
-        refetchOnWindowFocus: false,
+        refetchInterval: 10000,
+        retry: 3
       },
     });
 
@@ -94,8 +116,7 @@ export function ProfileSection(props: Props) {
     (item) =>
       item.assetContractAddress.toLowerCase() === contract.address.toLowerCase() &&
       item.creatorAddress.toLowerCase() === address.toLowerCase() &&
-      !item.isCanceled &&
-      !item.isSold
+      item.status === "ACTIVE"
   ) ?? [];
 
   const columns = useBreakpointValue({ base: 1, sm: 2, md: 2, lg: 2, xl: 4 });
@@ -119,9 +140,13 @@ export function ProfileSection(props: Props) {
           selectedCollection={selectedCollection}
           setSelectedCollection={setSelectedCollection}
         />
-        {isLoading ? (
+        {error ? (
           <Box>
-            <Text>Loading...</Text>
+            <Text color="red.500">Error loading NFTs. Please try again.</Text>
+          </Box>
+        ) : isLoadingOwnedNFTs ? (
+          <Box>
+            <Text>Loading {selectedCollection.type} NFTs...</Text>
           </Box>
         ) : (
           <>
@@ -219,3 +244,5 @@ export function ProfileSection(props: Props) {
     </Box>
   );
 }
+
+export { ProfileSection };

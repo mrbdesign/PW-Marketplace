@@ -16,7 +16,7 @@ export type GetERC1155sParams = {
 export async function getOwnedERC1155s(
   options: BaseTransactionOptions<GetERC1155sParams>
 ): Promise<NFT[]> {
-  const { contract, owner, batchSize = 50 } = options;
+  const { contract, owner, batchSize = 50, requestPerSec = 100 } = options;
 
   const maxId = await Promise.allSettled([
     readContract({
@@ -33,7 +33,6 @@ export async function getOwnedERC1155s(
 
   const processInBatches = async () => {
     const allOwnedNFTs: NFT[] = [];
-    
     for (let startIdx = 0; startIdx < Number(maxId); startIdx += batchSize) {
       const endIdx = Math.min(startIdx + batchSize, Number(maxId));
       const owners = Array(endIdx - startIdx).fill(owner);
@@ -54,7 +53,7 @@ export async function getOwnedERC1155s(
 
       if (ownedInBatch.length > 0) {
         const nftsInBatch = await Promise.all(
-          ownedInBatch.map(item => 
+          ownedInBatch.map(item =>
             getNFT({ ...options, tokenId: item.tokenId })
           )
         );
@@ -68,9 +67,9 @@ export async function getOwnedERC1155s(
         );
       }
 
-      if (options.requestPerSec) {
+      if (requestPerSec) {
         await new Promise(resolve => 
-          setTimeout(resolve, 1000 / options.requestPerSec)
+          setTimeout(resolve, 1000 / requestPerSec)
         );
       }
     }
