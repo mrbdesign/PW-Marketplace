@@ -4,29 +4,18 @@ import { client } from "@/consts/client";
 import { MARKETPLACE_CONTRACTS } from "@/consts/marketplace_contract";
 import { NFT_CONTRACTS } from "@/consts/nft_contracts";
 import { SUPPORTED_TOKENS, Token } from "@/consts/supported_tokens";
-import {
-  getSupplyInfo,
-  SupplyInfo,
-} from "@/extensions/getLargestCirculatingTokenId";
+import { getSupplyInfo, SupplyInfo } from "@/extensions/getLargestCirculatingTokenId";
 import { Box, Spinner } from "@chakra-ui/react";
 import { createContext, type ReactNode, useContext } from "react";
 import { getContract, type ThirdwebContract } from "thirdweb";
 import { getContractMetadata } from "thirdweb/extensions/common";
 import { isERC1155 } from "thirdweb/extensions/erc1155";
 import { isERC721 } from "thirdweb/extensions/erc721";
-import {
-  type DirectListing,
-  type EnglishAuction,
-  getAllAuctions,
-  getAllValidListings,
-} from "thirdweb/extensions/marketplace";
+import { type DirectListing, type EnglishAuction, getAllAuctions, getAllValidListings } from "thirdweb/extensions/marketplace";
 import { useReadContract } from "thirdweb/react";
 
 export type NftType = "ERC1155" | "ERC721";
 
-/**
- * Support for English auction coming soon.
- */
 const SUPPORT_AUCTION = false;
 
 type TMarketplaceContext = {
@@ -36,13 +25,11 @@ type TMarketplaceContext = {
   isLoading: boolean;
   allValidListings: DirectListing[] | undefined;
   allAuctions: EnglishAuction[] | undefined;
-  contractMetadata:
-    | {
-        [key: string]: any;
-        name: string;
-        symbol: string;
-      }
-    | undefined;
+  contractMetadata: {
+    [key: string]: any;
+    name: string;
+    symbol: string;
+  } | undefined;
   refetchAllListings: Function;
   isRefetchingAllListings: boolean;
   listingsInSelectedCollection: DirectListing[];
@@ -50,9 +37,7 @@ type TMarketplaceContext = {
   supportedTokens: Token[];
 };
 
-const MarketplaceContext = createContext<TMarketplaceContext | undefined>(
-  undefined
-);
+const MarketplaceContext = createContext<TMarketplaceContext | undefined>(undefined);
 
 export default function MarketplaceProvider({
   chainId,
@@ -69,23 +54,13 @@ export default function MarketplaceProvider({
   } catch (err) {
     throw new Error("Invalid chain ID");
   }
+
   const marketplaceContract = MARKETPLACE_CONTRACTS.find(
     (item) => item.chain.id === _chainId
   );
   if (!marketplaceContract) {
     throw new Error("Marketplace not supported on this chain");
   }
-
-  const collectionSupported = NFT_CONTRACTS.find(
-    (item) =>
-      item.address.toLowerCase() === contractAddress.toLowerCase() &&
-      item.chain.id === _chainId
-  );
-  // You can remove this condition if you want to supported _any_ nft collection
-  // or you can update the entries in `NFT_CONTRACTS`
-  // if (!collectionSupported) {
-  //   throw new Error("Contract not supported on this marketplace");
-  // }
 
   const contract = getContract({
     chain: marketplaceContract.chain,
@@ -103,25 +78,33 @@ export default function MarketplaceProvider({
     contract,
     queryOptions: {
       enabled: !!marketplaceContract,
+      staleTime: 30000,
     },
   });
-  const { data: is1155, isLoading: isChecking1155 } = useReadContract(
-    isERC1155,
-    { contract, queryOptions: { enabled: !!marketplaceContract } }
-  );
+
+  const { data: is1155, isLoading: isChecking1155 } = useReadContract(isERC1155, {
+    contract,
+    queryOptions: { 
+      enabled: !!marketplaceContract,
+      staleTime: 30000,
+    },
+  });
 
   const isNftCollection = is1155 || is721;
 
   if (!isNftCollection && !isChecking1155 && !isChecking721)
     throw new Error("Not a valid NFT collection");
 
-  const { data: contractMetadata, isLoading: isLoadingContractMetadata } =
-    useReadContract(getContractMetadata, {
+  const { data: contractMetadata, isLoading: isLoadingContractMetadata } = useReadContract(
+    getContractMetadata,
+    {
       contract,
       queryOptions: {
         enabled: isNftCollection,
+        staleTime: 30000,
       },
-    });
+    }
+  );
 
   const {
     data: allValidListings,
@@ -132,31 +115,30 @@ export default function MarketplaceProvider({
     contract: marketplace,
     queryOptions: {
       enabled: isNftCollection,
+      staleTime: 5000,
+      cacheTime: 10000,
+      refetchInterval: 10000,
     },
   });
 
   const listingsInSelectedCollection = allValidListings?.length
     ? allValidListings.filter(
         (item) =>
-          item.assetContractAddress.toLowerCase() ===
-          contract.address.toLowerCase()
+          item.assetContractAddress.toLowerCase() === contract.address.toLowerCase()
       )
     : [];
 
-  const { data: allAuctions, isLoading: isLoadingAuctions } = useReadContract(
-    getAllAuctions,
-    {
-      contract: marketplace,
-      queryOptions: { enabled: isNftCollection && SUPPORT_AUCTION },
-    }
-  );
+  const { data: allAuctions, isLoading: isLoadingAuctions } = useReadContract(getAllAuctions, {
+    contract: marketplace,
+    queryOptions: { 
+      enabled: isNftCollection && SUPPORT_AUCTION,
+      staleTime: 5000,
+    },
+  });
 
-  const { data: supplyInfo, isLoading: isLoadingSupplyInfo } = useReadContract(
-    getSupplyInfo,
-    {
-      contract,
-    }
-  );
+  const { data: supplyInfo, isLoading: isLoadingSupplyInfo } = useReadContract(getSupplyInfo, {
+    contract,
+  });
 
   const isLoading =
     isChecking1155 ||
@@ -167,9 +149,7 @@ export default function MarketplaceProvider({
     isLoadingSupplyInfo;
 
   const supportedTokens: Token[] =
-    SUPPORTED_TOKENS.find(
-      (item) => item.chain.id === marketplaceContract.chain.id
-    )?.tokens || [];
+    SUPPORTED_TOKENS.find((item) => item.chain.id === marketplaceContract.chain.id)?.tokens || [];
 
   return (
     <MarketplaceContext.Provider
@@ -209,9 +189,7 @@ export default function MarketplaceProvider({
 export function useMarketplaceContext() {
   const context = useContext(MarketplaceContext);
   if (context === undefined) {
-    throw new Error(
-      "useMarketplaceContext must be used inside MarketplaceProvider"
-    );
+    throw new Error("useMarketplaceContext must be used inside MarketplaceProvider");
   }
   return context;
 }

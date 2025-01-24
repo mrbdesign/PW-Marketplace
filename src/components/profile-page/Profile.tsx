@@ -1,6 +1,5 @@
 "use client";
 
-// UI Components below
 import {
   Box,
   Flex,
@@ -15,15 +14,11 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/next-js";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
-
-// Third-party imports
 import { blo } from "blo";
 import { shortenAddress } from "thirdweb/utils";
 import { MediaRenderer, useActiveAccount, useReadContract } from "thirdweb/react";
 import { getContract, toEther } from "thirdweb";
 import { getAllValidListings } from "thirdweb/extensions/marketplace";
-
-// Local imports
 import { NFT_CONTRACTS, type NftContract } from "@/consts/nft_contracts";
 import { MARKETPLACE_CONTRACTS } from "@/consts/marketplace_contract";
 import { client } from "@/consts/client";
@@ -31,8 +26,6 @@ import { getOwnedERC721s } from "@/extensions/getOwnedERC721s";
 import { getOwnedERC1155s } from "@/extensions/getOwnedERC1155s";
 import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
-
-// Components
 import { ProfileMenu } from "./Menu";
 import { OwnedItem } from "./OwnedItem";
 import { useState } from "react";
@@ -51,7 +44,7 @@ export function ProfileSection(props: Props) {
   const [selectedCollection, setSelectedCollection] = useState<NftContract>(
     NFT_CONTRACTS[0]
   );
-  
+
   const contract = getContract({
     address: selectedCollection.address,
     chain: selectedCollection.chain,
@@ -60,16 +53,17 @@ export function ProfileSection(props: Props) {
 
   const {
     data,
-    error,
-    isLoading: isLoadingOwnedNFTs,
+    isLoadingOwnedNFTs,
   } = useReadContract(
     selectedCollection.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
     {
       contract,
       owner: address,
-      requestPerSec: 50,
+      requestPerSec: 100,
       queryOptions: {
         enabled: !!address,
+        staleTime: 10000,
+        refetchOnWindowFocus: false,
       },
     }
   );
@@ -78,9 +72,8 @@ export function ProfileSection(props: Props) {
   const marketplaceContractAddress = MARKETPLACE_CONTRACTS.find(
     (o) => o.chain.id === chain.id
   )?.address;
-  
   if (!marketplaceContractAddress) throw Error("No marketplace contract found");
-  
+
   const marketplaceContract = getContract({
     address: marketplaceContractAddress,
     chain,
@@ -90,17 +83,20 @@ export function ProfileSection(props: Props) {
   const { data: allValidListings, isLoading: isLoadingValidListings } =
     useReadContract(getAllValidListings, {
       contract: marketplaceContract,
-      queryOptions: { enabled: data && data.length > 0 },
+      queryOptions: { 
+        enabled: true,
+        staleTime: 10000,
+        refetchOnWindowFocus: false,
+      },
     });
 
-  const listings = allValidListings?.length
-    ? allValidListings.filter(
-        (item) =>
-          item.assetContractAddress.toLowerCase() ===
-          contract.address.toLowerCase() &&
-          item.creatorAddress.toLowerCase() === address.toLowerCase()
-      )
-    : [];
+  const listings = allValidListings?.filter(
+    (item) =>
+      item.assetContractAddress.toLowerCase() === contract.address.toLowerCase() &&
+      item.creatorAddress.toLowerCase() === address.toLowerCase() &&
+      !item.isCanceled &&
+      !item.isSold
+  ) ?? [];
 
   const columns = useBreakpointValue({ base: 1, sm: 2, md: 2, lg: 2, xl: 4 });
 
@@ -139,7 +135,7 @@ export function ProfileSection(props: Props) {
                 >
                   <TabList>
                     <Tab>Owned ({data?.length})</Tab>
-                    <Tab>Listings ({listings.length || 0})</Tab>
+                    <Tab>Listed ({listings.length})</Tab>
                   </TabList>
                 </Tabs>
                 <Link
@@ -210,7 +206,7 @@ export function ProfileSection(props: Props) {
                       </>
                     ) : (
                       <Box>
-                        You do not have any listing in this collection
+                        <Text>You do not have any listing in this collection</Text>
                       </Box>
                     )}
                   </>

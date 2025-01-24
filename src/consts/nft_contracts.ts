@@ -11,12 +11,6 @@ export type NftContract = {
   slug?: string;
 };
 
-/**
- * Below is a list of all NFT contracts supported by your marketplace(s)
- * This is of course hard-coded for demo purpose
- *
- * In reality, the list should be dynamically fetched from your own data source
- */
 export const NFT_CONTRACTS: NftContract[] = [
   {
     address: "0x7CbDae78ceb1E27Aa6B0588f58D68afa560f6E16",
@@ -30,7 +24,7 @@ export const NFT_CONTRACTS: NftContract[] = [
     chain: base,
     title: "LITTLE WORLD Glass Works",
     thumbnailUrl: "/thumb/GW-300.png",
-    type: "ERC721",
+    type: "ERC1155",
   },
   {
     address: "0xdAd823bE6758f0584222A68E82C3e2621C4a952e",
