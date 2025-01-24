@@ -78,15 +78,17 @@ export default function MarketplaceProvider({
     contract,
     queryOptions: {
       enabled: !!marketplaceContract,
-      staleTime: 30000,
+      refetchInterval: 30000,
+      retry: 3
     },
   });
 
   const { data: is1155, isLoading: isChecking1155 } = useReadContract(isERC1155, {
     contract,
-    queryOptions: { 
+    queryOptions: {
       enabled: !!marketplaceContract,
-      staleTime: 30000,
+      refetchInterval: 30000,
+      retry: 3
     },
   });
 
@@ -101,7 +103,8 @@ export default function MarketplaceProvider({
       contract,
       queryOptions: {
         enabled: isNftCollection,
-        staleTime: 30000,
+        refetchInterval: 30000,
+        retry: 3
       },
     }
   );
@@ -115,24 +118,24 @@ export default function MarketplaceProvider({
     contract: marketplace,
     queryOptions: {
       enabled: isNftCollection,
-      staleTime: 5000,
-      cacheTime: 10000,
       refetchInterval: 10000,
+      retry: 3
     },
   });
 
   const listingsInSelectedCollection = allValidListings?.length
     ? allValidListings.filter(
-        (item) =>
-          item.assetContractAddress.toLowerCase() === contract.address.toLowerCase()
-      )
+      (item) =>
+        item.assetContractAddress.toLowerCase() === contract.address.toLowerCase()
+    )
     : [];
 
   const { data: allAuctions, isLoading: isLoadingAuctions } = useReadContract(getAllAuctions, {
     contract: marketplace,
-    queryOptions: { 
+    queryOptions: {
       enabled: isNftCollection && SUPPORT_AUCTION,
-      staleTime: 5000,
+      refetchInterval: 5000,
+      retry: 3
     },
   });
 

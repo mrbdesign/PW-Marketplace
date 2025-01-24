@@ -34,7 +34,7 @@ type Props = {
   address: string;
 };
 
-export function ProfileSection(props: Props) {
+function ProfileSection(props: Props) {
   const { address } = props;
   const account = useActiveAccount();
   const isYou = address.toLowerCase() === account?.address.toLowerCase();
@@ -62,8 +62,8 @@ export function ProfileSection(props: Props) {
       requestPerSec: 100,
       queryOptions: {
         enabled: !!address,
-        staleTime: 10000,
-        refetchOnWindowFocus: false,
+        refetchInterval: 10000,
+        retry: 3
       },
     }
   );
@@ -83,10 +83,10 @@ export function ProfileSection(props: Props) {
   const { data: allValidListings, isLoading: isLoadingValidListings } =
     useReadContract(getAllValidListings, {
       contract: marketplaceContract,
-      queryOptions: { 
+      queryOptions: {
         enabled: true,
-        staleTime: 10000,
-        refetchOnWindowFocus: false,
+        refetchInterval: 10000,
+        retry: 3
       },
     });
 
@@ -94,8 +94,7 @@ export function ProfileSection(props: Props) {
     (item) =>
       item.assetContractAddress.toLowerCase() === contract.address.toLowerCase() &&
       item.creatorAddress.toLowerCase() === address.toLowerCase() &&
-      !item.isCanceled &&
-      !item.isSold
+      item.status === "ACTIVE"
   ) ?? [];
 
   const columns = useBreakpointValue({ base: 1, sm: 2, md: 2, lg: 2, xl: 4 });
@@ -219,3 +218,5 @@ export function ProfileSection(props: Props) {
     </Box>
   );
 }
+
+export { ProfileSection };
