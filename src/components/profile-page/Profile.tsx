@@ -28,7 +28,7 @@ import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
 import { ProfileMenu } from "./Menu";
 import { OwnedItem } from "./OwnedItem";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Props = {
   address: string;
@@ -54,6 +54,7 @@ function ProfileSection(props: Props) {
   const {
     data,
     isLoading: isLoadingOwnedNFTs,
+    error
   } = useReadContract(
     selectedCollection.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
     {
@@ -67,6 +68,27 @@ function ProfileSection(props: Props) {
       },
     }
   );
+
+  useEffect(() => {
+    if (error) {
+      console.error('NFT loading error:', {
+        error,
+        contractType: selectedCollection.type,
+        contractAddress: contract.address,
+        ownerAddress: address
+      });
+    }
+  }, [error, selectedCollection.type, contract.address, address]);
+
+  useEffect(() => {
+    console.log('Contract Details:', {
+      type: selectedCollection.type,
+      address: contract.address,
+      owner: address,
+      data: data,
+      isLoading: isLoadingOwnedNFTs
+    });
+  }, [selectedCollection, data, isLoadingOwnedNFTs, contract.address, address]);
 
   const chain = contract.chain;
   const marketplaceContractAddress = MARKETPLACE_CONTRACTS.find(
@@ -118,9 +140,13 @@ function ProfileSection(props: Props) {
           selectedCollection={selectedCollection}
           setSelectedCollection={setSelectedCollection}
         />
-        {isLoadingOwnedNFTs ? (
+        {error ? (
           <Box>
-            <Text>Loading...</Text>
+            <Text color="red.500">Error loading NFTs. Please try again.</Text>
+          </Box>
+        ) : isLoadingOwnedNFTs ? (
+          <Box>
+            <Text>Loading {selectedCollection.type} NFTs...</Text>
           </Box>
         ) : (
           <>
