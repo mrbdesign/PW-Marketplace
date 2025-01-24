@@ -53,7 +53,7 @@ function ProfileSection(props: Props) {
 
   const {
     data,
-    isLoading,
+    isLoading: isLoadingOwnedNFTs,
   } = useReadContract(
     selectedCollection.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
     {
@@ -118,7 +118,7 @@ function ProfileSection(props: Props) {
           selectedCollection={selectedCollection}
           setSelectedCollection={setSelectedCollection}
         />
-        {isLoading ? (
+        {isLoadingOwnedNFTs ? (
           <Box>
             <Text>Loading...</Text>
           </Box>
