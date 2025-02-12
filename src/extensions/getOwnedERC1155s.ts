@@ -16,7 +16,7 @@ export type GetERC1155sParams = {
 export async function getOwnedERC1155s(
   options: BaseTransactionOptions<GetERC1155sParams>
 ): Promise<NFT[]> {
-  const { contract, owner, batchSize = 50, requestPerSec = 100 } = options;
+  const { contract, owner, batchSize = 50, requestPerSec = 25 } = options;
 
   const maxId = await Promise.allSettled([
     readContract({
