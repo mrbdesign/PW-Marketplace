@@ -60,7 +60,7 @@ function ProfileSection(props: Props) {
     {
       contract,
       owner: address,
-      requestPerSec: 100,
+      requestPerSec: 25,
       queryOptions: {
         enabled: !!address,
         refetchInterval: 10000,
