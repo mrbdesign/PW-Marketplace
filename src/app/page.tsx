@@ -16,7 +16,7 @@ export default function Home() {
       <Box mt="24px" m="auto">
         <Flex direction="column" gap="4">
           <Heading ml="20px" mt="40px">
-            We are Out Here !
+            100% Artist Owned + Operated. 0% Fees. !
           </Heading>
           <Flex
             direction="row"
