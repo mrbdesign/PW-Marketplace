@@ -40,6 +40,7 @@ function ProfileSection(props: Props) {
   const isYou = address.toLowerCase() === account?.address.toLowerCase();
   const { data: ensName } = useGetENSName({ address });
   const { data: ensAvatar } = useGetENSAvatar({ ensName });
+
   const [tabIndex, setTabIndex] = useState<number>(0);
   const [selectedCollection, setSelectedCollection] = useState<NftContract>(
     NFT_CONTRACTS[0]
@@ -121,13 +122,28 @@ function ProfileSection(props: Props) {
 
   const columns = useBreakpointValue({ base: 1, sm: 2, md: 2, lg: 2, xl: 4 });
 
+  const fallbackAvatar = "/thumb/fallback-avatar.png";
+
+  let avatarSource: string;
+  if (ensAvatar) {
+    avatarSource = ensAvatar;
+  } else if (ensName) {
+    avatarSource = blo(address as `0x${string}`);
+  } else {
+    avatarSource = fallbackAvatar;
+  }
+
   return (
     <Box px={{ lg: "50px", base: "20px" }}>
       <Flex direction={{ lg: "row", md: "column", sm: "column" }} gap={5}>
         <Img
-          src={ensAvatar ?? blo(address as `0x${string}`)}
+          src={avatarSource}
           w={{ lg: 150, base: 100 }}
           rounded="8px"
+          alt="Profile Avatar"
+          onError={(e) => {
+            e.currentTarget.src = fallbackAvatar;
+          }}
         />
         <Box my="auto">
           <Heading>{ensName ?? "Unnamed"}</Heading>
@@ -189,8 +205,8 @@ function ProfileSection(props: Props) {
                           {isYou
                             ? "You"
                             : ensName
-                            ? ensName
-                            : shortenAddress(address)}{" "}
+                              ? ensName
+                              : shortenAddress(address)}{" "}
                           {isYou ? "do" : "does"} not own any NFT in this
                           collection
                         </Text>
