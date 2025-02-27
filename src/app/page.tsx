@@ -12,7 +12,16 @@ import {
 
 export default function Home() {
   return (
-    <Flex>
+    <Flex direction="column" width="100%">
+      {/* Banner Image */}
+      <Image
+        src="/thumb/banner.png"
+        alt="Banner"
+        width="100%"
+        maxHeight="600px" // Increased maxHeight
+        objectFit="cover" // Changed to "cover"
+      />
+
       <Box mt="24px" m="auto">
         <Flex direction="column" gap="4">
           <Heading ml="20px" mt="40px">

@@ -164,7 +164,7 @@ export function Navbar() {
   const { colorMode } = useColorMode();
 
   return (
-    <Box py="30px" px={{ base: "20px", lg: "50px" }}>
+    <Box py="30px" /* Removed px property */>
       <Flex direction="row" justifyContent="space-between">
         <Box my="auto">
           <Heading
