@@ -40,6 +40,7 @@ export function Footer() {
           <Link
             href="https://x.com/mrbriandesign"
             target="_blank"
+            rel="noopener noreferrer"
             _hover={{ color: "#9acd32" }}
           >
             <FaXTwitter size={24} />
@@ -47,6 +48,7 @@ export function Footer() {
           <Link
             href="https://discord.gg/ZxU7aC4KZZ"
             target="_blank"
+            rel="noopener noreferrer"
             _hover={{ color: "#9acd32" }}
           >
             <FaDiscord size={24} />
