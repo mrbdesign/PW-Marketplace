@@ -21,7 +21,6 @@ import { FaRegMoon } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { IoSunny } from "react-icons/io5";
 import {
-  ConnectButton,
   useActiveAccount,
   useActiveWallet,
   useDisconnect,
@@ -33,6 +32,59 @@ import { client } from "@/consts/client";
 import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
 import { SideMenu } from "./SideMenu";
+
+// Custom Connect Button
+import { ConnectButton } from "thirdweb/react";
+import {
+  inAppWallet,
+  createWallet,
+} from "thirdweb/wallets";
+
+const wallets = [
+  inAppWallet({
+    auth: {
+      options: [
+        "google",
+        "discord",
+        "telegram",
+        "farcaster",
+        "email",
+        "x",
+        "passkey",
+        "phone",
+        "line",
+        "apple",
+        "coinbase",
+        "facebook",
+        "twitch",
+      ],
+    },
+  }),
+  createWallet("io.metamask"),
+  createWallet("com.coinbase.wallet"),
+  createWallet("me.rainbow"),
+  createWallet("io.rabby"),
+  createWallet("io.zerion.wallet"),
+];
+
+function CustomConnectButton() {
+  return (
+    <ConnectButton
+      client={client}
+      wallets={wallets}
+      connectButton={{ label: "Connect" }}
+      connectModal={{
+        size: "wide",
+        title: "Let's Friggin' Go !",
+        showThirdwebBranding: false,
+        termsOfServiceUrl:
+          "https://www.mrbriandesign.com/terms",
+        privacyPolicyUrl:
+          "https://www.mrbriandesign.com/privacy",
+      }}
+    />
+  );
+}
 
 // Component definitions
 function ToggleThemeButton() {
@@ -56,6 +108,16 @@ function ProfileButton({
   const { data: ensAvatar } = useGetENSAvatar({ ensName });
   const { colorMode } = useColorMode();
 
+  const fallbackAvatar = "/thumb/fallback-avatar.png";
+
+  // Determine the avatar source based on ENS name and avatar availability
+  let avatarSource: string;
+  if (ensName || ensAvatar) {
+    avatarSource = ensAvatar || blo(address as `0x${string}`); // Use ENS avatar if available, otherwise use blohash
+  } else {
+    avatarSource = fallbackAvatar; // Use fallback avatar if no ENS name or avatar
+  }
+
   return (
     <Menu>
       <MenuButton as={Button} height="56px">
@@ -64,16 +126,21 @@ function ProfileButton({
             <FiUser size={30} />
           </Box>
           <Image
-            src={ensAvatar ?? blo(address as `0x${string}`)}
+            src={avatarSource}
             height="40px"
             rounded="8px"
+            alt="Profile Avatar"
+            fallbackSrc={fallbackAvatar}
+            onError={(e) => {
+              e.currentTarget.src = fallbackAvatar;
+            }}
           />
         </Flex>
       </MenuButton>
       <MenuList>
         <MenuItem display="flex">
           <Box mx="auto">
-            <ConnectButton client={client} theme={colorMode} />
+            <CustomConnectButton />
           </Box>
         </MenuItem>
         <MenuItem as={Link} href="/profile" _hover={{ textDecoration: "none" }}>
@@ -115,11 +182,7 @@ export function Navbar() {
           {account && wallet ? (
             <ProfileButton address={account.address} wallet={wallet} />
           ) : (
-            <ConnectButton
-              client={client}
-              theme={colorMode}
-              connectButton={{ style: { height: "56px" } }}
-            />
+            <CustomConnectButton />
           )}
         </Box>
         <SideMenu />
