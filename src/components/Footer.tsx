@@ -26,7 +26,7 @@ export function Footer() {
           <Image
             src="/thumb/footer.png"
             alt="Logo"
-            width={300}  // Doubled width
+            width={300} // Doubled width
             height={64} // Doubled height
             className="h-8 w-auto"
           />
@@ -39,14 +39,14 @@ export function Footer() {
         <Flex gap={4} align="center">
           <Link
             href="https://x.com/mrbriandesign"
-            isExternal
+            target="_blank"
             _hover={{ color: "#9acd32" }}
           >
             <FaXTwitter size={24} />
           </Link>
           <Link
             href="https://discord.gg/ZxU7aC4KZZ"
-            isExternal
+            target="_blank"
             _hover={{ color: "#9acd32" }}
           >
             <FaDiscord size={24} />
