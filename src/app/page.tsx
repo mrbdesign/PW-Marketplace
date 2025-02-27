@@ -15,6 +15,7 @@ export default function Home() {
     <Flex>
       <Box mt="24px" m="auto">
         <Flex direction="column" gap="4">
+          <Image src="/thumb/banner.png" alt="Banner" mb="30px" />
           <Heading ml="20px" mt="40px">
             100% Artist Owned + Operated. 0% Fees.
           </Heading>

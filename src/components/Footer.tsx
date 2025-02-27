@@ -33,7 +33,7 @@ export function Footer() {
         </Flex>
 
         <Text textAlign="center" fontSize="sm" color="gray.500">
-          © {new Date().getFullYear()} LITTLE WORLD. All rights reserved.
+          © {new Date().getFullYear()} PIXEL WORLD by Mr.Brian Design. All rights reserved. Powered by Shoehorn Labs.
         </Text>
 
         <Flex gap={4} align="center">
