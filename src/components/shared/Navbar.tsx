@@ -4,15 +4,14 @@
 import { Link } from "@chakra-ui/next-js";
 import {
   Box,
-  Button,
   Flex,
   Heading,
   Menu,
-  MenuButton,
   MenuItem,
   MenuList,
   Image,
   useColorMode,
+  Text,
 } from "@chakra-ui/react";
 
 // Third-party imports
@@ -32,6 +31,7 @@ import { client } from "@/consts/client";
 import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
 import { SideMenu } from "./SideMenu";
+import { logger } from "@/utils/logger"; // Import logger
 
 // Custom Connect Button
 import { ConnectButton } from "thirdweb/react";
@@ -69,20 +69,30 @@ const wallets = [
 
 function CustomConnectButton() {
   return (
-    <ConnectButton
-      client={client}
-      wallets={wallets}
-      connectButton={{ label: "Connect" }}
-      connectModal={{
-        size: "wide",
-        title: "Let's Friggin' Go !",
-        showThirdwebBranding: false,
-        termsOfServiceUrl:
-          "https://www.mrbriandesign.com/terms",
-        privacyPolicyUrl:
-          "https://www.mrbriandesign.com/privacy",
+    <div
+      onClick={(e) => {
+        // Programmatically trigger the click event on the ConnectButton
+        const connectButton = e.currentTarget.querySelector("button");
+        if (connectButton) {
+          connectButton.click();
+        }
       }}
-    />
+    >
+      <ConnectButton
+        client={client}
+        wallets={wallets}
+        connectButton={{ label: "Connect" }}
+        connectModal={{
+          size: "wide",
+          title: "Let's Friggin' Go !",
+          showThirdwebBranding: false,
+          termsOfServiceUrl:
+            "https://www.mrbriandesign.com/terms",
+          privacyPolicyUrl:
+            "https://www.mrbriandesign.com/privacy",
+        }}
+      />
+    </div>
   );
 }
 
@@ -90,9 +100,9 @@ function CustomConnectButton() {
 function ToggleThemeButton() {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <Button height="56px" w="56px" onClick={toggleColorMode} mr="10px">
+    <Box height="56px" w="56px" onClick={toggleColorMode} mr="10px">
       {colorMode === "light" ? <FaRegMoon /> : <IoSunny />}
-    </Button>
+    </Box>
   );
 }
 
@@ -120,7 +130,17 @@ function ProfileButton({
 
   return (
     <Menu>
-      <MenuButton as={Button} height="56px">
+      <Box // Changed from Button to Box
+        height="56px"
+        onClick={(e) => { // Add onClick handler to open the menu
+          const menuButton = e.currentTarget;
+          const menuList = menuButton.nextElementSibling as HTMLElement; // Get the MenuList
+          if (menuList) {
+            menuList.style.display = menuList.style.display === "none" ? "block" : "none"; // Toggle display
+          }
+        }}
+        _hover={{ cursor: "pointer" }} // Add hover effect
+      >
         <Flex direction="row" gap="5">
           <Box my="auto">
             <FiUser size={30} />
@@ -136,8 +156,8 @@ function ProfileButton({
             }}
           />
         </Flex>
-      </MenuButton>
-      <MenuList>
+      </Box>
+      <MenuList style={{ display: "none" }}> {/* Hide MenuList by default */}
         <MenuItem display="flex">
           <Box mx="auto">
             <CustomConnectButton />

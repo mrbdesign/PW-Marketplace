@@ -20,6 +20,7 @@ import {
   useSwitchActiveWalletChain,
 } from "thirdweb/react";
 import type { Account } from "thirdweb/wallets";
+import { logger } from "@/utils/logger"; // Import the logger
 
 const buyButtonStyles = {
   backgroundColor: "#9ACD32",
@@ -92,7 +93,7 @@ export default function BuyFromListingButton(props: Props) {
             quantity: listing.quantity,
             recipient: account.address,
           });
-          console.log(transaction);
+          logger.log(transaction); // Use logger.log
           const receipt = await sendTransaction({
             transaction,
             account,
@@ -111,7 +112,7 @@ export default function BuyFromListingButton(props: Props) {
           });
           refetchAllListings();
         } catch (err) {
-          console.error(err);
+          logger.error(err); // Use logger.error
           if ((err as Error).message.startsWith("insufficient funds for gas")) {
             toast({
               title: "You don't have enough funds for this purchase.",

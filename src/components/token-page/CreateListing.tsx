@@ -32,6 +32,7 @@ import {
   useSwitchActiveWalletChain,
 } from "thirdweb/react";
 import type { Account } from "thirdweb/wallets";
+import { logger } from "@/utils/logger"; // Import the logger
 
 type Props = {
   tokenId: bigint;
@@ -159,7 +160,7 @@ export function CreateListing(props: Props) {
 
       refetchAllListings();
     } catch (error: any) {
-      console.error("Listing error:", error);
+      logger.error("Listing error:", error); // Use logger.error
       toast({
         title: "Error",
         description: "Failed to create listing: " + (error?.message || "Unknown error occurred"),
@@ -258,8 +259,8 @@ export function CreateListing(props: Props) {
                 <Text my="auto">{token.symbol}</Text>
                 {token.tokenAddress.toLowerCase() ===
                   currency?.tokenAddress.toLowerCase() && (
-                  <CheckIcon ml="auto" />
-                )}
+                    <CheckIcon ml="auto" />
+                  )}
               </MenuItem>
             ))}
           </MenuList>

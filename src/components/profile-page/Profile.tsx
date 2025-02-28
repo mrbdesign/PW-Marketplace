@@ -29,6 +29,7 @@ import { useGetENSName } from "@/hooks/useGetENSName";
 import { ProfileMenu } from "./Menu";
 import { OwnedItem } from "./OwnedItem";
 import { useState, useEffect } from "react";
+import { logger } from "@/utils/logger"; // Import the logger
 
 type Props = {
   address: string;
@@ -55,7 +56,7 @@ function ProfileSection(props: Props) {
   const {
     data,
     isLoading: isLoadingOwnedNFTs,
-    error
+    error,
   } = useReadContract(
     selectedCollection.type === "ERC1155" ? getOwnedERC1155s : getOwnedERC721s,
     {
@@ -65,14 +66,14 @@ function ProfileSection(props: Props) {
       queryOptions: {
         enabled: !!address,
         refetchInterval: 10000,
-        retry: 3
+        retry: 3,
       },
     }
   );
 
   useEffect(() => {
     if (error) {
-      console.error('NFT loading error:', {
+      logger.error('NFT loading error:', { // Use logger.error
         error,
         contractType: selectedCollection.type,
         contractAddress: contract.address,
@@ -82,7 +83,7 @@ function ProfileSection(props: Props) {
   }, [error, selectedCollection.type, contract.address, address]);
 
   useEffect(() => {
-    console.log('Contract Details:', {
+    logger.log('Contract Details:', { // Use logger.log
       type: selectedCollection.type,
       address: contract.address,
       owner: address,
@@ -109,7 +110,7 @@ function ProfileSection(props: Props) {
       queryOptions: {
         enabled: true,
         refetchInterval: 10000,
-        retry: 3
+        retry: 3,
       },
     });
 

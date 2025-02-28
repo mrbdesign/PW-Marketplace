@@ -1,10 +1,25 @@
 /** @type {import('next').NextConfig} */
+const TerserPlugin = require('terser-webpack-plugin');
+
 const nextConfig = {
-  webpack: (config) => {
+  webpack: (config, { isServer, dev }) => {
+    if (!isServer && !dev) {
+      config.optimization.minimizer = [
+        new TerserPlugin({
+          terserOptions: {
+            compress: {
+              drop_console: true, // Remove console.log statements
+            },
+          },
+        }),
+      ];
+    }
+
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
     };
+
     return config;
   },
   async headers() {
