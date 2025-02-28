@@ -7,15 +7,14 @@ import {
   Flex,
   Heading,
   Menu,
+  MenuButton,
   MenuItem,
   MenuList,
   Image,
   useColorMode,
-  Text,
 } from "@chakra-ui/react";
 
 // Third-party imports
-import { blo } from "blo";
 import { FaRegMoon } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import { IoSunny } from "react-icons/io5";
@@ -31,7 +30,7 @@ import { client } from "@/consts/client";
 import { useGetENSAvatar } from "@/hooks/useGetENSAvatar";
 import { useGetENSName } from "@/hooks/useGetENSName";
 import { SideMenu } from "./SideMenu";
-import { logger } from "@/utils/logger"; // Import logger
+import { logger } from "@/utils/logger";
 
 // Custom Connect Button
 import { ConnectButton } from "thirdweb/react";
@@ -71,7 +70,6 @@ function CustomConnectButton() {
   return (
     <div
       onClick={(e) => {
-        // Programmatically trigger the click event on the ConnectButton
         const connectButton = e.currentTarget.querySelector("button");
         if (connectButton) {
           connectButton.click();
@@ -96,7 +94,6 @@ function CustomConnectButton() {
   );
 }
 
-// Component definitions
 function ToggleThemeButton() {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
@@ -116,31 +113,19 @@ function ProfileButton({
   const { disconnect } = useDisconnect();
   const { data: ensName } = useGetENSName({ address });
   const { data: ensAvatar } = useGetENSAvatar({ ensName });
-  const { colorMode } = useColorMode();
 
   const fallbackAvatar = "/thumb/fallback-avatar.png";
 
-  // Determine the avatar source based on ENS name and avatar availability
-  let avatarSource: string;
-  if (ensName || ensAvatar) {
-    avatarSource = ensAvatar || blo(address as `0x${string}`); // Use ENS avatar if available, otherwise use blohash
-  } else {
-    avatarSource = fallbackAvatar; // Use fallback avatar if no ENS name or avatar
-  }
+  // Prioritize fallback avatar when no ENS avatar is available
+  const avatarSource = ensAvatar || fallbackAvatar;
+
+  console.log('ENS Avatar:', ensAvatar);
+  console.log('Fallback Avatar:', fallbackAvatar);
+  console.log('Avatar Source:', avatarSource);
 
   return (
     <Menu>
-      <Box // Changed from Button to Box
-        height="56px"
-        onClick={(e) => { // Add onClick handler to open the menu
-          const menuButton = e.currentTarget;
-          const menuList = menuButton.nextElementSibling as HTMLElement; // Get the MenuList
-          if (menuList) {
-            menuList.style.display = menuList.style.display === "none" ? "block" : "none"; // Toggle display
-          }
-        }}
-        _hover={{ cursor: "pointer" }} // Add hover effect
-      >
+      <MenuButton as={Box} height="56px" _hover={{ cursor: "pointer" }}>
         <Flex direction="row" gap="5">
           <Box my="auto">
             <FiUser size={30} />
@@ -156,14 +141,21 @@ function ProfileButton({
             }}
           />
         </Flex>
-      </Box>
-      <MenuList style={{ display: "none" }}> {/* Hide MenuList by default */}
+      </MenuButton>
+      <MenuList>
         <MenuItem display="flex">
           <Box mx="auto">
             <CustomConnectButton />
           </Box>
         </MenuItem>
-        <MenuItem as={Link} href="/profile" _hover={{ textDecoration: "none" }}>
+        <MenuItem 
+          as={Link} 
+          href="/profile" 
+          _hover={{ textDecoration: "none" }}
+          onClick={() => {
+            logger.log("Profile link clicked");
+          }}
+        >
           Profile {ensName ? `(${ensName})` : ""}
         </MenuItem>
         <MenuItem
@@ -181,10 +173,9 @@ function ProfileButton({
 export function Navbar() {
   const account = useActiveAccount();
   const wallet = useActiveWallet();
-  const { colorMode } = useColorMode();
 
   return (
-    <Box py="30px" px="25px"> {/* Added px="25px" */}
+    <Box py="30px" px="25px">
       <Flex direction="row" justifyContent="space-between">
         <Box my="auto">
           <Heading

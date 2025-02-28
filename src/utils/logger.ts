@@ -6,6 +6,11 @@ export const logger = {
       console.log(...args);
     }
   },
+  info: (...args: any[]) => {
+    if (!isProduction) {
+      console.info(...args);
+    }
+  },
   warn: (...args: any[]) => {
     if (!isProduction) {
       console.warn(...args);
