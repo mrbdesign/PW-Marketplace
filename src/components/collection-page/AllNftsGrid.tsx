@@ -7,13 +7,15 @@ import {
   Box,
   Flex,
   SimpleGrid,
-  useBreakpointValue,
   Text,
 } from "@chakra-ui/react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getNFTs as getNFTs1155 } from "thirdweb/extensions/erc1155";
 import { getNFTs as getNFTs721 } from "thirdweb/extensions/erc721";
 import { MediaRenderer, useReadContract } from "thirdweb/react";
+
+// utils
+import { debounce } from 'lodash';
 
 export function AllNftsGrid() {
   const [loadedNFTs, setLoadedNFTs] = useState<any[]>([]);
@@ -41,27 +43,35 @@ export function AllNftsGrid() {
     }
   }, [newNFTs]);
 
-  useEffect(() => {
-    const handleScroll = () => {
+  // Debounce the handleScroll function
+  const handleScroll = useCallback(
+    debounce(() => {
       if (
         window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100 &&
         loadedNFTs.length < Number(totalItems)
       ) {
         setCurrentPage(prev => prev + 1);
       }
-    };
+    }, 200), // Adjust the debounce delay as needed
+    [loadedNFTs.length, totalItems]
+  );
 
+  useEffect(() => {
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadedNFTs.length, totalItems]);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      handleScroll.cancel(); // Cancel any pending debounced calls
+    };
+  }, [handleScroll]);
 
-  const columns = useBreakpointValue({
-    base: 1,
-    sm: 2,
-    md: 4,
-    lg: 4,
-    xl: 5,
-  });
+  // const columns = useBreakpointValue({
+  //   base: 1,
+  //   sm: 2,
+  //   md: 4,
+  //   lg: 4,
+  //   xl: 5,
+  // });
+  const columns = 2; // Set a fixed number of columns
 
   return (
     <SimpleGrid columns={columns} spacing={4} p={4} mx="auto" mt="20px">
