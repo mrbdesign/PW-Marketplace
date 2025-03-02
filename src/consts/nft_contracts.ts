@@ -60,16 +60,6 @@ export const NFT_CONTRACTS: NftContract[] = [
     slug: generateSlug("MACHINE ELVES by ArtsAbide"), // Generate slug
   },
   {
-    id: "nyan-dot-cat", // Example ID
-    address: "0xE7D4DE14e1e5bBC50BE8b0905a056beC56BE7B66",
-    chain: base,
-    chainId: base.id,
-    title: "NYAN DOT CAT",
-    thumbnailUrl: "/thumb/NyanDot.png",
-    type: "ERC1155",
-    slug: generateSlug("NYAN DOT CAT"), // Generate slug
-  },
-  {
     id: "phast-phood-phunks", // Example ID
     address: "0xAa7588F883377fd75EFbC814E266d121AAC3f398",
     chain: base,
@@ -89,5 +79,6 @@ export const NFT_CONTRACTS: NftContract[] = [
     type: "ERC721",
     slug: generateSlug("Based Nouns"), // Generate slug
   },
+  
    
 ];
